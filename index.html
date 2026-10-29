@@ -3,36 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IBRI Platform</title>
+    <title>IBRI Community Network | Albany</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <meta name="theme-color" content="#1a1a1a">
+    <link rel="icon" type="image/png" href="ibri-community-network-favicon-master.png">
+    <meta name="theme-color" content="#4D5B3F">
 </head>
 <body>
-    <header>
-        <h1>IBRI Platform</h1>
-        <p>Sabbath Focus & Publishing</p>
+    <header class="brand-header">
+        <div class="logo-container">
+            <img src="ibri-community-network-primary-logo.png" alt="Ibri Community Network Logo" class="primary-logo">
+        </div>
+        <p class="tagline">Covenant &bull; Community &bull; Self-Sufficiency</p>
+        <p class="sub-tagline">For the Qodeshym</p>
     </header>
+    
     <main>
-        <section id="hero">
-            <h2>Welcome</h2>
-            <p>Sabbath-focused PWA landing page and publishing archive.</p>
+        <section id="hero" class="card">
+            <h2>Albany Community Setup (v1.0)</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Launch Date</span>
+                    <span class="stat-label">April 3, 2027</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Initial Phase</span>
+                    <span class="stat-value">9 Residents</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Living Quarters</span>
+                    <span class="stat-value">1.25 Acres</span>
+                </div>
+            </div>
+            <p class="hero-text">The Albany homestead blueprint utilizes a structured 1.25-acre living footprint featuring 20 canvas wall tents, providing housing for the initial 9 residents while scaling toward the 70-100 person target. The agricultural foundation relies on a diverse 10-breed pasture plan for unsegregated foraging.</p>
         </section>
+
         <section id="articles">
-            <h3>Latest Publications</h3>
+            <h3 class="section-title">Latest Updates & Directives</h3>
             <div id="posts-container"></div>
         </section>
     </main>
+    
     <script src="posts.js"></script>
     <script>
         const container = document.getElementById('posts-container');
-        posts.forEach(post => {
-            const article = document.createElement('article');
-            article.innerHTML = `<h4>${post.title}</h4><p><small>${post.date}</small></p><p>${post.content}</p>`;
-            container.appendChild(article);
-        });
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+        if (typeof posts !== 'undefined') {
+            posts.forEach(post => {
+                const article = document.createElement('article');
+                article.className = 'post-card';
+                article.innerHTML = `
+                    <div class="post-header">
+                        <h4>${post.title}</h4>
+                        <span class="post-date">${post.date}</span>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                `;
+                container.appendChild(article);
+            });
         }
     </script>
 </body>
