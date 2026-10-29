@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBRI Platform</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#1a1a1a">
+</head>
+<body>
+    <header>
+        <h1>IBRI Platform</h1>
+        <p>Sabbath Focus & Publishing</p>
+    </header>
+    <main>
+        <section id="hero">
+            <h2>Welcome</h2>
+            <p>Sabbath-focused PWA landing page and publishing archive.</p>
+        </section>
+        <section id="articles">
+            <h3>Latest Publications</h3>
+            <div id="posts-container"></div>
+        </section>
+    </main>
+    <script src="posts.js"></script>
+    <script>
+        const container = document.getElementById('posts-container');
+        posts.forEach(post => {
+            const article = document.createElement('article');
+            article.innerHTML = `<h4>${post.title}</h4><p><small>${post.date}</small></p><p>${post.content}</p>`;
+            container.appendChild(article);
+        });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "IBRI Platform",
+  "short_name": "IBRI",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "icons": []
+}
