@@ -1,9 +1,21 @@
 {
-  "name": "IBRI Platform",
-  "short_name": "IBRI",
-  "start_url": "index.html",
+  "name": "IBRI Community Network",
+  "short_name": "IBRI Network",
+  "description": "Sabbath Focus, Directives & Live Broadcast Sanctuary",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#1a1a1a",
-  "icons": []
+  "background_color": "#F5F1E8",
+  "theme_color": "#4D5B3F",
+  "icons": [
+    {
+      "src": "ibri-community-network-favicon-master.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ibri-community-network-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

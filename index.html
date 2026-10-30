@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IBRI Community Network | Albany</title>
+    <title>IBRI Community Network | Sabbath Focus & Publishing</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="ibri-community-network-favicon-master.png">
+    <link rel="apple-touch-icon" href="ibri-community-network-icon.png">
     <meta name="theme-color" content="#4D5B3F">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
     <header class="brand-header">
@@ -16,49 +18,147 @@
         </div>
         <p class="tagline">Covenant &bull; Community &bull; Self-Sufficiency</p>
         <p class="sub-tagline">For the Qodeshym</p>
+        <nav class="main-nav">
+            <a href="#live-section">Live Broadcast</a>
+            <a href="#featured-section">Active Directive</a>
+            <a href="#archive-section">Archive Vault</a>
+        </nav>
     </header>
-    
+
     <main>
-        <section id="hero" class="card">
-            <h2>Albany Community Setup (v1.0)</h2>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <span class="stat-label">Launch Date</span>
-                    <span class="stat-label">April 3, 2027</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-label">Initial Phase</span>
-                    <span class="stat-value">9 Residents</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-label">Living Quarters</span>
-                    <span class="stat-value">1.25 Acres</span>
+        <!-- ROOM 1: LIVE BROADCAST THEATRE -->
+        <section id="live-section" class="card">
+            <div class="section-header">
+                <h2>Live Broadcast Sanctuary</h2>
+                <span id="stream-status" class="status-badge offline">Standby / Offline</span>
+            </div>
+            <div class="video-wrapper">
+                <video id="live-video" controls playsinline poster="ibri-community-network-primary-logo.png"></video>
+                <div id="video-overlay" class="video-overlay">
+                    <p>Broadcast Server Ready &bull; Standby for Next Live Sabbath Assembly</p>
+                    <button id="retry-stream-btn" class="btn-secondary" onclick="initStream()">Check Live Feed</button>
                 </div>
             </div>
-            <p class="hero-text">The Albany homestead blueprint utilizes a structured 1.25-acre living footprint featuring 20 canvas wall tents, providing housing for the initial 9 residents while scaling toward the 70-100 person target. The agricultural foundation relies on a diverse 10-breed pasture plan for unsegregated foraging.</p>
         </section>
 
-        <section id="articles">
-            <h3 class="section-title">Latest Updates & Directives</h3>
-            <div id="posts-container"></div>
+        <!-- ROOM 2: ACTIVE SABBATH DIRECTIVE VIEWER -->
+        <section id="featured-section" class="card">
+            <div class="section-header">
+                <h2>Current Sabbath Directive</h2>
+                <span class="badge-gold">Featured Publication</span>
+            </div>
+            <div id="featured-container">
+                <p class="empty-state">Structural slot ready. Awaiting first publication in posts.js.</p>
+            </div>
+        </section>
+
+        <!-- ROOM 3: ARCHIVE VAULT -->
+        <section id="archive-section">
+            <h3 class="section-title">Publishing Archive Vault</h3>
+            <div id="archive-container">
+                <p class="empty-state">Archive vault initialized. Past publications will automatically shelve here.</p>
+            </div>
         </section>
     </main>
-    
+
+    <footer class="site-footer">
+        <p>&copy; IBRI Community Network &bull; Self-Sovereign Publishing & Broadcast Platform</p>
+    </footer>
+
     <script src="posts.js"></script>
     <script>
-        const container = document.getElementById('posts-container');
-        if (typeof posts !== 'undefined') {
-            posts.forEach(post => {
-                const article = document.createElement('article');
-                article.className = 'post-card';
-                article.innerHTML = `
+        // 1. HLS Livestream Wiring (Port 8088)
+        const STREAM_URL = 'http://64.177.46.86:8088/hls/sabbath.m3u8';
+        const video = document.getElementById('live-video');
+        const statusBadge = document.getElementById('stream-status');
+        const overlay = document.getElementById('video-overlay');
+
+        function setStreamLive() {
+            statusBadge.textContent = 'LIVE NOW';
+            statusBadge.className = 'status-badge live';
+            overlay.style.display = 'none';
+        }
+
+        function setStreamOffline() {
+            statusBadge.textContent = 'Standby / Offline';
+            statusBadge.className = 'status-badge offline';
+            overlay.style.display = 'flex';
+        }
+
+        function initStream() {
+            if (Hls.isSupported()) {
+                const hls = new Hls({ ManifestLoadingTimeOut: 5000 });
+                hls.loadSource(STREAM_URL);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    setStreamLive();
+                    video.play().catch(() => {});
+                });
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (data.fatal) {
+                        setStreamOffline();
+                    }
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = STREAM_URL;
+                video.addEventListener('loadedmetadata', function() {
+                    setStreamLive();
+                });
+                video.addEventListener('error', function() {
+                    setStreamOffline();
+                });
+            }
+        }
+        initStream();
+
+        // 2. Dynamic Featured & Archive Routing from posts.js
+        const featuredContainer = document.getElementById('featured-container');
+        const archiveContainer = document.getElementById('archive-container');
+
+        if (typeof posts !== 'undefined' && Array.isArray(posts) && posts.length > 0) {
+            // Render newest post (index 0) in Featured Viewer
+            const latest = posts[0];
+            const pdfButton = latest.pdfUrl 
+                ? `<div class="pdf-actions"><a href="${latest.pdfUrl}" class="btn-primary" target="_blank" download>Download Official PDF Directive</a></div>` 
+                : '';
+
+            featuredContainer.innerHTML = `
+                <article class="featured-article">
                     <div class="post-header">
-                        <h4>${post.title}</h4>
-                        <span class="post-date">${post.date}</span>
+                        <h3>${latest.title}</h3>
+                        <span class="post-date">${latest.date}</span>
                     </div>
-                    <div class="post-content">${post.content}</div>
-                `;
-                container.appendChild(article);
+                    <div class="post-content">${latest.content}</div>
+                    ${pdfButton}
+                </article>
+            `;
+
+            // Render older posts (index 1+) in Archive Vault
+            if (posts.length > 1) {
+                archiveContainer.innerHTML = '';
+                posts.slice(1).forEach(post => {
+                    const article = document.createElement('article');
+                    article.className = 'post-card';
+                    const archivePdf = post.pdfUrl 
+                        ? `<div class="pdf-actions"><a href="${post.pdfUrl}" class="btn-link" target="_blank" download>Download PDF &rarr;</a></div>` 
+                        : '';
+                    article.innerHTML = `
+                        <div class="post-header">
+                            <h4>${post.title}</h4>
+                            <span class="post-date">${post.date}</span>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        ${archivePdf}
+                    `;
+                    archiveContainer.appendChild(article);
+                });
+            }
+        }
+
+        // 3. Register PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW setup:', err));
             });
         }
     </script>
