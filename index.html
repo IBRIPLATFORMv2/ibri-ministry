@@ -164,3 +164,52 @@
     </script>
 </body>
 </html>
+
+<!-- Qodeshym Newsletter & Push Subscription Section -->
+<section class="newsletter-section" style="background: #2c3e2d; color: #fbf9f5; padding: 2rem; border-radius: 8px; margin-top: 3rem; text-align: center;">
+  <h3>Subscribe to "YAHU'SHAR'AL The Qodeshym"</h3>
+  <p style="margin-bottom: 1.5rem; opacity: 0.9;">Receive the latest Sabbath articles, community directives, and live broadcast alerts directly.</p>
+  
+  <form id="newsletter-form" onsubmit="handleNewsletterSubmit(event)" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5rem;">
+    <input type="email" id="subscriber-email" placeholder="Enter your email address..." required style="padding: 10px 15px; border-radius: 4px; border: none; width: 280px; font-size: 1rem;">
+    <button type="submit" style="background: #d4af37; color: #2c3e2d; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer;">Subscribe</button>
+  </form>
+  <p id="subscription-status" style="margin-top: 10px; font-size: 0.9rem; color: #d4af37; display: none;"></p>
+
+  <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem; margin-top: 1.5rem;">
+    <button onclick="requestPushNotifications()" style="background: transparent; color: #d4af37; border: 1px solid #d4af37; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Enable Live Broadcast & Push Alerts</button>
+  </div>
+</section>
+
+<script>
+  function handleNewsletterSubmit(event) {
+    event.preventDefault();
+    const email = document.getElementById('subscriber-email').value;
+    const status = document.getElementById('subscription-status');
+    status.style.display = 'block';
+    status.textContent = `Thank you for subscribing, ${email}. You are now registered for The Qodeshym.`;
+    document.getElementById('subscriber-email').value = '';
+  }
+
+  async function requestPushNotifications() {
+    if ('Notification' in window && 'serviceWorker' in navigator) {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        alert('Push notifications enabled! You will be alerted when broadcasts go live.');
+      } else {
+        alert('Notification permission was denied.');
+      }
+    } else {
+      alert('Push notifications are not supported by your browser.');
+    }
+  }
+
+  // Register Service Worker for PWA & Push
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered! Scope:', reg.scope))
+        .catch(err => console.error('Service Worker registration failed:', err));
+    });
+  }
+</script>
